@@ -72,6 +72,12 @@ aby prohlížeče načetly novou verzi.
 - Později (ne v první verzi): dary (bez slov „tax-deductible" před
   501(c)(3)), dokument
 
+## Při spuštění (až weby nahradí ty staré)
+
+- Smazat `robots.txt` a `<meta name="robots" content="noindex…">` ze všech stránek
+- Zapnout skutečné odesílání formulářů
+- Odkazy na Key Sailing (patička „Sail with Tim and Jan", About Jan) teď vedou na náhled `adam-kriz.github.io/1-key-sailing-sarasota/` → při spuštění vrátit na `https://www.siestakeysailing.com`
+
 ## Lokální náhled
 
 `.claude/launch.json` v kořeni workspace: konfigurace `2-sailing-home-sarasota`

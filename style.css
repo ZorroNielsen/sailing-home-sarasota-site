@@ -190,6 +190,17 @@ p:last-child { margin-bottom: 0; }
   .hero .btn { width: 100%; }
 }
 
+/* ---------- Home: opening lines of the book ---------- */
+
+.excerpt-in { max-width: var(--read); margin: 0 auto; text-align: center; }
+.excerpt-in::before {
+  content: ""; display: block; width: 64px; height: 4px; margin: 0 auto 2rem;
+  background: var(--sun); border-radius: 2px;
+}
+.excerpt blockquote { margin: 0; font-size: clamp(1.4rem, 2.6vw, 1.75rem); line-height: 1.6; color: var(--ink); }
+.excerpt figcaption { margin-top: 1.25rem; font-family: var(--sans); font-weight: 700; color: var(--sea); font-size: 1.1rem; }
+.excerpt-cta { text-align: center; margin-top: 2rem; }
+
 /* ---------- About teaser / about page ---------- */
 
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); align-items: center; }

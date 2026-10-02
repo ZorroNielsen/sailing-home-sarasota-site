@@ -5,7 +5,9 @@ kniha a neziskovka. Skutečný klient (Jan Hamel Solomon), ne ukázkový web.
 
 ## Status
 
-**První verze (náhled pro Jan)** — hotová lokálně, 2. 10. 2026.
+**První verze (náhled pro Jan)** — hotová, 2. 10. 2026.
+Repo: [adam-kriz/2-sailing-home-sarasota](https://github.com/adam-kriz/2-sailing-home-sarasota).
+Náhled (GitHub Pages): https://adam-kriz.github.io/2-sailing-home-sarasota/
 
 Tohle je **web č. 2 ze dvou** ze stejného zadání (proto „2-" v názvu).
 Web č. 1: `../1-key-sailing-sarasota/` (Key Sailing, plavby s Timem a Jan).

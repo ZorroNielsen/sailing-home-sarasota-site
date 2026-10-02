@@ -1,0 +1,253 @@
+/* Sailing Home Sarasota — first version
+   Same family as Key Sailing (fonts, sizes, layout), but calmer:
+   warm paper background, serif reading text, colours from the SHS logo.
+   Yellow is only a small accent (current menu item, footer rule). */
+
+:root {
+  --sea: #1876bc;        /* logo blue: headings, links, buttons */
+  --sea-dark: #0f4f80;   /* hover, footer */
+  --sun: #fecc2d;        /* logo yellow — small accents only */
+  --ink: #1f2933;
+  --ink-soft: #4a5562;
+  --paper: #fbf8f3;      /* warm page background */
+  --white: #ffffff;
+  --line: #e3ddd2;
+
+  --wrap: 1100px;
+  --read: 38rem;         /* narrow column for long reading */
+  --radius: 6px;
+  --gap: clamp(1.5rem, 4vw, 3rem);
+  --section: clamp(3rem, 7vw, 5.5rem);
+
+  --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 7rem; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.25rem;     /* 20px */
+  line-height: 1.65;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+
+a { color: var(--sea); text-decoration-thickness: 1.5px; text-underline-offset: 0.18em; }
+a:hover { color: var(--sea-dark); text-decoration-thickness: 2.5px; }
+
+:focus-visible { outline: 3px solid var(--sea); outline-offset: 3px; }
+.site-footer :focus-visible { outline-color: var(--sun); }
+
+h1, h2, h3 {
+  font-family: var(--serif);
+  font-weight: 600;
+  color: var(--sea-dark);
+  line-height: 1.2;
+  margin: 0 0 0.6em;
+  text-wrap: balance;
+}
+h1 { font-size: clamp(2.1rem, 4.5vw, 3.1rem); }
+h2 { font-size: clamp(1.7rem, 3vw, 2.2rem); }
+h3 { font-size: 1.4rem; }
+
+p { margin: 0 0 1em; text-wrap: pretty; }
+p:last-child { margin-bottom: 0; }
+
+.wrap { width: min(100% - 2rem, var(--wrap)); margin-inline: auto; }
+
+.skip {
+  position: absolute; left: 1rem; top: -4rem; z-index: 50;
+  background: var(--sea); color: var(--white);
+  padding: 0.6rem 1rem; border-radius: var(--radius); font-family: var(--sans);
+}
+.skip:focus { top: 1rem; }
+
+.icon { width: 1.2em; height: 1.2em; flex: none; }
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5em;
+  min-height: 3.25rem; padding: 0.7em 1.35em;
+  border: 2px solid transparent; border-radius: var(--radius);
+  font: 700 1.15rem/1.2 var(--sans);
+  text-decoration: none; cursor: pointer; white-space: nowrap;
+}
+.btn:hover { text-decoration: none; }
+.btn-sea { background: var(--sea); border-color: var(--sea); color: var(--white); }
+.btn-sea:hover { background: var(--sea-dark); border-color: var(--sea-dark); color: var(--white); }
+.btn-line { background: transparent; border-color: var(--sea); color: var(--sea); }
+.btn-line:hover { background: var(--sea); color: var(--white); }
+/* Amazon button until the link exists */
+.btn-soon { background: transparent; border: 2px dashed #9aa5b1; color: var(--ink-soft); cursor: default; }
+.btn-soon:hover { color: var(--ink-soft); }
+
+.btn-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+/* ---------- Header (menu centred; hides on scroll down, returns on scroll up) ---------- */
+
+.site-header {
+  position: sticky; top: 0; z-index: 30;
+  background: var(--white); border-bottom: 1px solid var(--line);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  font-family: var(--sans);
+}
+.site-header.is-hidden { transform: translateY(-100%); }
+.site-header.is-raised { box-shadow: 0 2px 12px rgb(31 41 51 / 0.1); }
+@media (prefers-reduced-motion: reduce) { .site-header { transition: none; } }
+
+.header-in {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; column-gap: 1rem;
+  min-height: 6rem;
+}
+.logo { justify-self: start; display: block; }
+.logo img { width: 140px; height: auto; }
+
+.site-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 0.25rem; }
+.site-nav li { margin: 0; }
+.site-nav a {
+  display: block; padding: 0.55rem 0.7rem;
+  color: var(--ink); font-size: 1.15rem; font-weight: 700; text-decoration: none; white-space: nowrap;
+  border-bottom: 3px solid transparent;
+}
+.site-nav a:hover { color: var(--sea); border-bottom-color: var(--line); }
+.site-nav a[aria-current="page"] { color: var(--sea-dark); border-bottom-color: var(--sun); }
+
+.header-end { justify-self: end; }
+.header-phone { font-weight: 700; font-size: 1.1rem; color: var(--sea-dark); text-decoration: none; white-space: nowrap; }
+.header-phone:hover { text-decoration: underline; }
+
+.menu-btn {
+  display: none; align-items: center; gap: 0.5rem;
+  min-height: 3rem; padding: 0.4rem 0.9rem;
+  border: 2px solid var(--sea); border-radius: var(--radius);
+  background: var(--white); color: var(--sea);
+  font: 700 1.1rem var(--sans); cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .header-in { display: flex; flex-wrap: wrap; gap: 0.75rem; min-height: 4.75rem; padding-block: 0.5rem; }
+  .logo img { width: 105px; }
+  .header-end { margin-left: auto; }
+  .menu-btn { display: inline-flex; }
+  .site-nav { order: 4; flex-basis: 100%; display: none; }
+  .site-nav.is-open { display: block; }
+  .site-nav ul { flex-direction: column; gap: 0; border-top: 1px solid var(--line); }
+  .site-nav a { padding: 0.9rem 0.25rem; border-bottom: 1px solid var(--line); font-size: 1.2rem; }
+  .site-nav a[aria-current="page"] { border-bottom-color: var(--line); box-shadow: inset 4px 0 0 var(--sun); padding-left: 0.9rem; }
+  .no-js .site-nav { display: block; }
+}
+@media (max-width: 420px) {
+  .header-phone { display: none; }
+  .logo img { width: 95px; }
+}
+
+/* ---------- Sections ---------- */
+
+.section { padding-block: var(--section); }
+.white { background: var(--white); border-block: 1px solid var(--line); }
+
+.page-head { padding-block: clamp(2.5rem, 6vw, 4rem) 0; }
+.page-head + .section { padding-top: clamp(1.75rem, 4vw, 2.5rem); }
+
+.lede { font-size: clamp(1.3rem, 2.2vw, 1.5rem); color: var(--ink-soft); }
+.note { font-family: var(--sans); font-size: 1.15rem; color: var(--ink-soft); }
+
+/* ---------- Home hero ---------- */
+
+.hero-grid { display: grid; grid-template-columns: minmax(220px, 340px) 1fr; gap: var(--gap); align-items: center; }
+.hero h1 { font-size: clamp(2.3rem, 5vw, 3.6rem); margin-bottom: 0.25em; }
+.tagline-big {
+  font-family: var(--sans); font-weight: 700; letter-spacing: 0.03em;
+  color: var(--sea); font-size: clamp(1.15rem, 2vw, 1.35rem); margin-bottom: 1.25rem;
+}
+.hero .intro { font-size: clamp(1.3rem, 2.2vw, 1.5rem); line-height: 1.55; margin-bottom: 1.75rem; }
+.hero .btn-row { margin-bottom: 1.25rem; }
+
+/* Book cover placeholder until Jan sends the real cover */
+.cover {
+  aspect-ratio: 2 / 3; width: 100%;
+  border-radius: 4px;
+  box-shadow: 0 14px 30px rgb(31 41 51 / 0.18), 0 2px 6px rgb(31 41 51 / 0.12);
+}
+.cover-placeholder {
+  display: grid; place-items: center; text-align: center;
+  background: var(--white); border: 2px dashed #b9c2cc; box-shadow: none;
+  font-family: var(--sans); color: #8a95a1; font-size: 1.05rem;
+}
+@media (max-width: 760px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-cover { width: min(180px, 50%); margin-inline: auto; }
+}
+@media (max-width: 600px) {
+  .hero .btn-row { flex-direction: column; }
+  .hero .btn { width: 100%; }
+}
+
+/* ---------- About teaser / about page ---------- */
+
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); align-items: center; }
+@media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+.photo img { width: 100%; border-radius: var(--radius); }
+
+.links-list { list-style: none; margin: 0; padding: 0; }
+.links-list li { padding: 1rem 0; border-bottom: 1px solid var(--line); }
+.links-list li:first-child { border-top: 1px solid var(--line); }
+.links-list strong { font-family: var(--sans); color: var(--sea-dark); letter-spacing: 0.02em; }
+
+/* ---------- Sample chapter: long, comfortable reading ---------- */
+
+.chapter { max-width: var(--read); margin-inline: auto; font-size: 1.3rem; line-height: 1.8; }
+.chapter p { margin-bottom: 1.15em; }
+.chapter h2 {
+  font-size: clamp(1.45rem, 2.6vw, 1.75rem); letter-spacing: 0.02em;
+  margin: 2.6em 0 1em; padding-top: 1.4em; border-top: 1px solid var(--line); text-align: center;
+}
+.chapter h3 { font-size: 1.4rem; margin: 2em 0 0.7em; color: var(--sea); }
+.title-page { text-align: center; margin-bottom: 2.75rem; padding-bottom: 2rem; border-bottom: 1px solid var(--line); }
+.book-title { font-size: clamp(1.9rem, 4vw, 2.5rem); font-weight: 700; font-style: italic; color: var(--sea-dark); line-height: 1.2; margin-bottom: 0.6rem; }
+.book-byline { font-family: var(--sans); font-size: 1.15rem; color: var(--ink-soft); margin-bottom: 0.2rem; }
+.chapter-end { max-width: var(--read); margin: 3.5rem auto 0; padding-top: 2rem; border-top: 1px solid var(--line); }
+
+/* ---------- Forms ---------- */
+
+.form { display: grid; gap: 1.25rem; max-width: 36rem; font-family: var(--sans); }
+.form-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+@media (max-width: 640px) { .form-2 { grid-template-columns: 1fr; } }
+.field label { display: block; font-weight: 700; margin-bottom: 0.35rem; font-size: 1.15rem; }
+.field input, .field textarea {
+  width: 100%; min-height: 3.25rem; padding: 0.65rem 0.8rem;
+  border: 2px solid #8a95a1; border-radius: var(--radius);
+  font: inherit; font-size: 1.2rem; color: var(--ink); background: var(--white);
+}
+.field textarea { min-height: 9rem; resize: vertical; }
+.field input:focus, .field textarea:focus { border-color: var(--sea); outline: 3px solid rgb(24 118 188 / 0.25); outline-offset: 0; }
+.req { color: var(--ink-soft); font-weight: 400; font-size: 1rem; }
+.form-done {
+  padding: 1.25rem 1.5rem; border-radius: var(--radius);
+  background: var(--sea); color: var(--white);
+  font-family: var(--sans); font-size: 1.35rem; font-weight: 700;
+}
+.contact-list { list-style: none; padding: 0; margin: 0; font-family: var(--sans); }
+.contact-list li { padding: 0.6rem 0; }
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  background: var(--sea-dark); color: var(--white);
+  border-top: 4px solid var(--sun);
+  padding-block: 2.75rem 1.5rem;
+  font-family: var(--sans); font-size: 1.1rem;
+}
+.site-footer a { color: var(--white); }
+.footer-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem 2.5rem; text-align: center; }
+.footer-grid p { margin: 0; }
+.f-bottom { margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid rgb(255 255 255 / 0.25); text-align: center; font-size: 1rem; }
+
+[hidden] { display: none !important; }

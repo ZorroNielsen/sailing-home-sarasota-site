@@ -6,8 +6,8 @@ kniha a neziskovka. Skutečný klient (Jan Hamel Solomon), ne ukázkový web.
 ## Status
 
 **První verze (náhled pro Jan)** — hotová, 2. 10. 2026.
-Repo: [adam-kriz/2-sailing-home-sarasota](https://github.com/adam-kriz/2-sailing-home-sarasota).
-Náhled (GitHub Pages): https://adam-kriz.github.io/2-sailing-home-sarasota/
+Repo: [ZorroNielsen/sailing-home-sarasota-site](https://github.com/ZorroNielsen/sailing-home-sarasota-site) (copied from adam-kriz/2-sailing-home-sarasota).
+Náhled (GitHub Pages): https://zorronielsen.github.io/sailing-home-sarasota-site/
 
 Tohle je **web č. 2 ze dvou** ze stejného zadání (proto „2-" v názvu).
 Web č. 1: `../1-key-sailing-sarasota/` (Key Sailing, plavby s Timem a Jan).
@@ -76,7 +76,7 @@ aby prohlížeče načetly novou verzi.
 
 - Smazat `robots.txt` a `<meta name="robots" content="noindex…">` ze všech stránek
 - Zapnout skutečné odesílání formulářů
-- Odkazy na Key Sailing (patička „Sail with Tim and Jan", About Jan) teď vedou na náhled `adam-kriz.github.io/1-key-sailing-sarasota/` → při spuštění vrátit na `https://www.siestakeysailing.com`
+- Odkazy na Key Sailing (patička „Sail with Tim and Jan", About Jan) teď vedou na náhled `zorronielsen.github.io/key-sailing-site/` → při spuštění vrátit na `https://www.siestakeysailing.com`
 
 ## Lokální náhled
 

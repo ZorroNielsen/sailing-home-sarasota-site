@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,700&amp;display=swap">
-<link rel="stylesheet" href="../style.css?v=3">
-<script src="../js/main.js?v=3" defer></script>
+<link rel="stylesheet" href="../style.css?v=4">
+<script src="../js/main.js?v=4" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -40,8 +40,14 @@
 <section class="section">
   <div class="wrap split" style="align-items:start">
     <div>
-      <!-- Preview: shown but nothing is sent (js/main.js). Live version sends to sailinghomesarasota@gmail.com. -->
-      <form id="speaking-form" class="form" action="mailto:sailinghomesarasota@gmail.com" method="post" enctype="text/plain" data-preview data-done="form-done">
+      <!-- Sends through /api/contact (functions/api/contact.js → Resend).
+           Until FORMS_LIVE is "true" in wrangler.toml, messages go to the test address, not to Jan. -->
+      <form id="speaking-form" class="form" action="/api/contact" method="post" data-api="/api/contact" data-done="form-done" data-fail="form-fail">
+        <input type="hidden" name="form" value="speaking">
+        <div class="hp" aria-hidden="true">
+          <label for="s-website">Website</label>
+          <input id="s-website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
         <div class="field">
           <label for="s-name">Name <span class="req">Required</span></label>
           <input id="s-name" name="Name" type="text" autocomplete="name" required>
@@ -78,9 +84,14 @@
           <label for="s-msg">Message</label>
           <textarea id="s-msg" name="Message"></textarea>
         </div>
+        <!-- Turnstile: test site key below always passes. Replace with the real site key from
+             Cloudflare → Turnstile when the widget exists. -->
+        <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="light"></div>
         <div><button class="btn btn-sea" type="submit">Send Message</button></div>
       </form>
       <p id="form-done" class="form-done" tabindex="-1" hidden>Thanks for contacting us</p>
+      <p id="form-fail" class="form-fail" tabindex="-1" hidden>Sorry, the message didn't go through. Please email <a href="mailto:sailinghomesarasota@gmail.com">sailinghomesarasota@gmail.com</a> or call <a href="tel:+19413467245">(941) 346-7245</a>.</p>
+      <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     </div>
     <figure class="photo" style="margin:0">
       <img src="../images/About-Jan-Solomon.jpg" width="1000" height="649" alt="Jan Hamel Solomon with Tim aboard the Key Breeze, and on Siesta Beach">

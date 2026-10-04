@@ -1,0 +1,15 @@
+# Cloudflare Pages settings for sailing-home-sarasota-site.
+# Plain variables live here (this file wins over the dashboard).
+# Secrets are NOT here; set them in the dashboard (Settings > Variables and Secrets):
+#   RESEND_API_KEY, TURNSTILE_SECRET_KEY, TEST_TO
+name = "sailing-home-sarasota-site"
+pages_build_output_dir = "."
+compatibility_date = "2026-09-01"
+
+[vars]
+SITE = "sailing-home"
+SITE_NAME = "Sailing Home Sarasota website"
+MAIL_FROM = "Sailing Home Sarasota website <onboarding@resend.dev>"
+LIVE_TO = "sailinghomesarasota@gmail.com"
+# Keep "false" until launch: every form goes to TEST_TO, never to Jan.
+FORMS_LIVE = "false"

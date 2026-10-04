@@ -248,6 +248,15 @@ p:last-child { margin-bottom: 0; }
 .contact-list { list-style: none; padding: 0; margin: 0; font-family: var(--sans); }
 .contact-list li { padding: 0.6rem 0; }
 
+/* Honeypot field: hidden from people, bots fill it in */
+.hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.cf-turnstile { min-height: 65px; }
+.form-fail {
+  margin-top: 1rem; padding: 1rem 1.25rem; border-radius: var(--radius);
+  border: 2px solid var(--sea); background: var(--white); color: var(--ink);
+  font-family: var(--sans); font-weight: 700;
+}
+
 /* ---------- Footer ---------- */
 
 .site-footer {

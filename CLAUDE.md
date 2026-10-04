@@ -1,4 +1,4 @@
-# 2-sailing-home-sarasota
+# sailing-home-sarasota-site
 
 Nový web pro **Sailing Home Sarasota** (sailinghomesarasota.com) — Janina
 kniha a neziskovka. Skutečný klient (Jan Hamel Solomon), ne ukázkový web.
@@ -6,11 +6,13 @@ kniha a neziskovka. Skutečný klient (Jan Hamel Solomon), ne ukázkový web.
 ## Status
 
 **První verze (náhled pro Jan)** — hotová, 2. 10. 2026.
-Repo: [ZorroNielsen/sailing-home-sarasota-site](https://github.com/ZorroNielsen/sailing-home-sarasota-site) (copied from adam-kriz/2-sailing-home-sarasota).
+Od 4. 10. 2026 se pracuje **jen v tomhle repu**: [ZorroNielsen/sailing-home-sarasota-site](https://github.com/ZorroNielsen/sailing-home-sarasota-site)
+(vzniklo kopií `adam-kriz/2-sailing-home-sarasota`, to staré už neupravovat).
 Náhled (GitHub Pages): https://zorronielsen.github.io/sailing-home-sarasota-site/
+Hosting: **Cloudflare Pages** (účet „Websitesbychris.co@gmail.com's Account"),
+projekt `sailing-home-sarasota-site` → `sailing-home-sarasota-site.pages.dev`.
 
-Tohle je **web č. 2 ze dvou** ze stejného zadání (proto „2-" v názvu).
-Web č. 1: `../1-key-sailing-sarasota/` (Key Sailing, plavby s Timem a Jan).
+Web č. 2 ze dvou. Web č. 1: `../key-sailing-site/` (Key Sailing, plavby s Timem a Jan).
 
 ## Hlavní pravidlo
 
@@ -47,12 +49,16 @@ Statický web, bez build stepu. Stránky jsou ve složkách, aby fungovaly
   Sans 3), aby oba weby působily jako rodina; tady je ale serif i pro
   běžný text (klidnější, knižní dojem).
 - `js/main.js` — mobilní menu, hlavička mizí při scrollu dolů a vrací se
-  při scrollu nahoru, formuláře v náhledu nic neodesílají
+  při scrollu nahoru, odesílání formulářů přes `/api/contact`
+- `functions/api/contact.js` — formuláře Speaking a Contact → e-mail přes Resend
+- `wrangler.toml` — nastavení Cloudflare Pages; tajné klíče tu **nejsou**
+- `404.html` — „Page not found" (absolutní cesty `/…`)
+- `sitemap.xml` — adresy s ostrou doménou sailinghomesarasota.com
 - `images/` — logo `SHS-logo2.png` a `About-Jan-Solomon.jpg` ze starého webu
 - `robots.txt` + `noindex` — náhled se nemá objevit ve vyhledávačích
 
 Hlavička a patička jsou **v každém HTML souboru zvlášť** — změna = změnit
-v 5 souborech. CSS/JS odkazy mají `?v=2`; po změně stylu číslo zvýšit,
+v 6 souborech (včetně `404.html`). CSS/JS odkazy mají `?v=4`; po změně stylu číslo zvýšit,
 aby prohlížeče načetly novou verzi.
 
 ## Funkce
@@ -60,8 +66,16 @@ aby prohlížeče načetly novou verzi.
 - **Buy on Amazon** — zatím jen „Coming soon to Amazon" (čárkované
   tlačítko). Až bude odkaz, vyměnit za `<a class="btn btn-sea" href="…">Buy on Amazon</a>`
   na Home a na konci Sample Chapter.
-- **Formuláře** (Speaking, Contact) — v náhledu jen ukážou „Thanks for
-  contacting us". Ostrá verze má posílat na sailinghomesarasota@gmail.com.
+- **Formuláře** (Speaking, Contact) → `POST /api/contact` (Pages Function)
+  → Resend. Honeypot pole `website` + Cloudflare Turnstile (zatím **testovací**
+  site key `1x00000000000000000000AA`, vyměnit za skutečný). **Bezpečnost:**
+  dokud je ve `wrangler.toml` `FORMS_LIVE = "false"`, jde vše na `TEST_TO`,
+  nikdy na Jan. Lokálně funkce neběží → formulář ukáže chybovou hlášku.
+
+## Cloudflare — tajné klíče (dashboard → projekt → Settings → Variables and Secrets)
+
+`RESEND_API_KEY`, `TURNSTILE_SECRET_KEY`, `TEST_TO` — stejné jako u
+key-sailing-site (viz jeho CLAUDE.md). Web Analytics se zapíná v dashboardu.
 
 ## Čeká se na Jan
 
@@ -74,11 +88,13 @@ aby prohlížeče načetly novou verzi.
 
 ## Při spuštění (až weby nahradí ty staré)
 
-- Smazat `robots.txt` a `<meta name="robots" content="noindex…">` ze všech stránek
-- Zapnout skutečné odesílání formulářů
+- Domény sailinghomesarasota.com (+ www) na Cloudflare, napojit na Pages projekt
+- Smazat `Disallow: /` z `robots.txt` a `<meta name="robots" content="noindex…">` ze všech stránek
+- Formuláře: v Resend ověřit doménu, přepnout `MAIL_FROM`, pak `FORMS_LIVE = "true"`
+- Turnstile: přidat ostré domény do hostnames widgetu
 - Odkazy na Key Sailing (patička „Sail with Tim and Jan", About Jan) teď vedou na náhled `zorronielsen.github.io/key-sailing-site/` → při spuštění vrátit na `https://www.siestakeysailing.com`
 
 ## Lokální náhled
 
-`.claude/launch.json` v kořeni workspace: konfigurace `2-sailing-home-sarasota`
+`.claude/launch.json` v kořeni workspace: konfigurace `sailing-home-sarasota-site`
 (Python `http.server` na portu 8128) → http://localhost:8128

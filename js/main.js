@@ -43,15 +43,32 @@ document.documentElement.classList.remove("no-js");
   header.addEventListener("focusin", function () { header.classList.remove("is-hidden"); });
 })();
 
-// ---------- Forms (preview: shown, but nothing is sent) ----------
+// ---------- Forms: send through /api/contact (Pages Function → Resend) ----------
 (function () {
-  document.querySelectorAll("form[data-preview]").forEach(function (form) {
+  document.querySelectorAll("form[data-api]").forEach(function (form) {
+    const done = document.getElementById(form.getAttribute("data-done"));
+    const fail = document.getElementById(form.getAttribute("data-fail"));
+    const button = form.querySelector('[type="submit"]');
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!form.reportValidity()) return;
-      const done = document.getElementById(form.getAttribute("data-done"));
-      form.hidden = true;
-      if (done) { done.hidden = false; done.focus(); }
+      if (fail) fail.hidden = true;
+      button.disabled = true;
+      fetch(form.getAttribute("data-api"), { method: "POST", body: new FormData(form) })
+        .then(function (r) {
+          return r.json().catch(function () { return {}; }).then(function (out) {
+            if (!r.ok || !out.ok) throw new Error(out.error || String(r.status));
+          });
+        })
+        .then(function () {
+          form.hidden = true;
+          if (done) { done.hidden = false; done.focus(); }
+        })
+        .catch(function () {
+          button.disabled = false;
+          if (window.turnstile) window.turnstile.reset();
+          if (fail) { fail.hidden = false; fail.focus(); }
+        });
     });
   });
 })();

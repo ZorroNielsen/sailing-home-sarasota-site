@@ -1,2 +1,5 @@
 User-agent: *
 Disallow: /
+
+# Remove the Disallow line at launch (noindex preview until then)
+Sitemap: https://sailinghomesarasota.com/sitemap.xml

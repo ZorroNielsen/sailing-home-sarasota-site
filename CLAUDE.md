@@ -90,7 +90,11 @@ key-sailing-site (viz jeho CLAUDE.md). Web Analytics se zapíná v dashboardu.
 
 - Domény sailinghomesarasota.com (+ www) na Cloudflare, napojit na Pages projekt
 - Smazat `Disallow: /` z `robots.txt` a `<meta name="robots" content="noindex…">` ze všech stránek
-- Formuláře: v Resend ověřit doménu, přepnout `MAIL_FROM`, pak `FORMS_LIVE = "true"`
+- Formuláře: v Resend přidat a ověřit doménu sailinghomesarasota.com (DNS záznamy SPF/DKIM/DMARC
+  přidat v Cloudflare DNS), `MAIL_FROM` přepnout na adresu z ní (např.
+  `website@sailinghomesarasota.com`), pak `FORMS_LIVE = "true"` — teprve tehdy chodí zprávy Jan.
+  Bez ověřené domény padají e-maily do spamu (test 4. 10. 2026: všechny 3
+  formuláře doručeny přes `onboarding@resend.dev`, ale do spamu).
 - Turnstile: přidat ostré domény do hostnames widgetu
 - Odkazy na Key Sailing (patička „Sail with Tim and Jan", About Jan) teď vedou na náhled `key-sailing-site.pages.dev` → při spuštění vrátit na `https://www.siestakeysailing.com`
 

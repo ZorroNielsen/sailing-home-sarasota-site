@@ -67,8 +67,8 @@ aby prohlížeče načetly novou verzi.
   tlačítko). Až bude odkaz, vyměnit za `<a class="btn btn-sea" href="…">Buy on Amazon</a>`
   na Home a na konci Sample Chapter.
 - **Formuláře** (Speaking, Contact) → `POST /api/contact` (Pages Function)
-  → Resend. Honeypot pole `website` + Cloudflare Turnstile (zatím **testovací**
-  site key `1x00000000000000000000AA`, vyměnit za skutečný). **Bezpečnost:**
+  → Resend. Honeypot pole `website` + Cloudflare Turnstile (widget „Sarasota sites",
+  site key `0x4AAAAAAFNkFBzFm2CQXTsB`, společný s key-sailing-site). **Bezpečnost:**
   dokud je ve `wrangler.toml` `FORMS_LIVE = "false"`, jde vše na `TEST_TO`,
   nikdy na Jan. Lokálně funkce neběží → formulář ukáže chybovou hlášku.
 

@@ -60,9 +60,9 @@
           <label for="c-msg">Message</label>
           <textarea id="c-msg" name="Message"></textarea>
         </div>
-        <!-- Turnstile: test site key below always passes. Replace with the real site key from
-             Cloudflare → Turnstile when the widget exists. -->
-        <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="light"></div>
+        <!-- Turnstile widget "Sarasota sites" (Cloudflare → Turnstile). Hostnames: *.pages.dev now,
+             add the real domains at launch. Secret key lives in Pages secrets (TURNSTILE_SECRET_KEY). -->
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAFNkFBzFm2CQXTsB" data-theme="light"></div>
         <div><button class="btn btn-sea" type="submit">Send Message</button></div>
       </form>
       <p id="form-done" class="form-done" tabindex="-1" hidden>Thanks for contacting us</p>

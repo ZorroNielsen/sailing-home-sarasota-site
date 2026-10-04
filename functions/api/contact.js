@@ -38,9 +38,11 @@ export async function onRequestPost({ request, env }) {
 
   const live = env.FORMS_LIVE === "true";
   const to = live ? env.LIVE_TO : env.TEST_TO;
-  if (!to || !env.RESEND_API_KEY || !env.TURNSTILE_SECRET_KEY) {
-    return json({ ok: false, error: "not-configured" }, 500);
-  }
+  // Names only (never values), so a missing setting is easy to spot.
+  const missing = [live ? "LIVE_TO" : "TEST_TO", "RESEND_API_KEY", "TURNSTILE_SECRET_KEY"].filter(
+    (name) => !(name === "LIVE_TO" || name === "TEST_TO" ? to : env[name])
+  );
+  if (missing.length) return json({ ok: false, error: "not-configured", missing }, 500);
 
   if (!(await turnstileOk(data.get("cf-turnstile-response"), env, request))) {
     return json({ ok: false, error: "turnstile" }, 403);

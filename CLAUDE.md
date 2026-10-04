@@ -77,12 +77,18 @@ aby prohlížeče načetly novou verzi.
 `RESEND_API_KEY`, `TURNSTILE_SECRET_KEY`, `TEST_TO` — stejné jako u
 key-sailing-site (viz jeho CLAUDE.md). Web Analytics se zapíná v dashboardu.
 
-## Čeká se na Jan
+## Čeká se na Jan (seznam ve zprávě pro Jan, připravené 4. 10. 2026)
 
 - Obálka knihy (teď placeholder „Book cover")
 - Odkaz na Amazon
 - Jestli má kniha vlastní Facebook/Instagram
 - Jestli dát na web celou knihu místo ukázky
+- „Home in a Helicopter" v ukázce vypadá jako nadpis přilepený k předchozímu
+  řádku — má to být samostatný nadpis?
+- Volitelně: čistý portrét Jan a fotka z přednášky (pro Speaking);
+  1–2 věty jejími slovy o tom, o čem přednáší
+- Ke spuštění: schválení náhledu; přístup k doméně sailinghomesarasota.com;
+  jestli Jan používá e-mail na doméně (pak zachovat MX záznamy)
 - Později (ne v první verzi): dary (bez slov „tax-deductible" před
   501(c)(3)), dokument
 

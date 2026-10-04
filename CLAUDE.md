@@ -8,7 +8,7 @@ kniha a neziskovka. Skutečný klient (Jan Hamel Solomon), ne ukázkový web.
 **První verze (náhled pro Jan)** — hotová, 2. 10. 2026.
 Od 4. 10. 2026 se pracuje **jen v tomhle repu**: [ZorroNielsen/sailing-home-sarasota-site](https://github.com/ZorroNielsen/sailing-home-sarasota-site)
 (vzniklo kopií `adam-kriz/2-sailing-home-sarasota`, to staré už neupravovat).
-Náhled (GitHub Pages): https://zorronielsen.github.io/sailing-home-sarasota-site/
+Náhled: https://sailing-home-sarasota-site.pages.dev/ (starý náhled na GitHub Pages už neaktualizovat, neběží tam formuláře)
 Hosting: **Cloudflare Pages** (účet „Websitesbychris.co@gmail.com's Account"),
 projekt `sailing-home-sarasota-site` → `sailing-home-sarasota-site.pages.dev`.
 
@@ -92,7 +92,7 @@ key-sailing-site (viz jeho CLAUDE.md). Web Analytics se zapíná v dashboardu.
 - Smazat `Disallow: /` z `robots.txt` a `<meta name="robots" content="noindex…">` ze všech stránek
 - Formuláře: v Resend ověřit doménu, přepnout `MAIL_FROM`, pak `FORMS_LIVE = "true"`
 - Turnstile: přidat ostré domény do hostnames widgetu
-- Odkazy na Key Sailing (patička „Sail with Tim and Jan", About Jan) teď vedou na náhled `zorronielsen.github.io/key-sailing-site/` → při spuštění vrátit na `https://www.siestakeysailing.com`
+- Odkazy na Key Sailing (patička „Sail with Tim and Jan", About Jan) teď vedou na náhled `key-sailing-site.pages.dev` → při spuštění vrátit na `https://www.siestakeysailing.com`
 
 ## Lokální náhled
 

@@ -12,6 +12,9 @@ Náhled: https://sailing-home-sarasota-site.pages.dev/ (starý náhled na GitHub
 Hosting: **Cloudflare Pages** (účet „Websitesbychris.co@gmail.com's Account"),
 projekt `sailing-home-sarasota-site` → `sailing-home-sarasota-site.pages.dev`.
 
+**Nový design (7. 10. 2026):** stejný vzhled jako nový web Key Sailing (styl
+lightshiprv.com) — oba Janiny weby teď působí jako jedna rodina.
+
 Web č. 2 ze dvou. Web č. 1: `../key-sailing-site/` (Key Sailing, plavby s Timem a Jan).
 
 ## Hlavní pravidlo
@@ -43,11 +46,12 @@ Statický web, bez build stepu. Stránky jsou ve složkách, aby fungovaly
 | `speaking/index.html` | **Nová stránka** — formulář pro objednání přednášky |
 | `contact-us/index.html` | Kontakt — formulář + e-mail a telefon |
 
-- `style.css` — vzhled; barvy z loga SHS: modrá `#1876BC`, tmavší
-  `#0F4F80`, žlutá `#FECC2D` jen jako drobný akcent, teplé „papírové"
-  pozadí `#FBF8F3`. Stejné fonty jako web č. 1 (Source Serif 4 + Source
-  Sans 3), aby oba weby působily jako rodina; tady je ale serif i pro
-  běžný text (klidnější, knižní dojem).
+- `style.css` — vzhled, stejný jako nový Key Sailing: bílá stránka, písmo **Hanken
+  Grotesk**, obří nadpisy, zaoblené fotky, béžové panely `#F3F0EA` (třída `.white`),
+  zaoblená tlačítka, světlá patička. Vlastní akcent = modrá z loga SHS (tlačítka
+  `#145F99`, odkazy `#1876BC`), žlutá `#FECC2D` jen jako proužek nad úryvkem.
+  Slova z knihy (úryvek na Home, Sample Chapter) jsou v patkovém **Source Serif 4**,
+  aby se četla jako kniha. Obálka na Home je v béžovém rámu.
 - `js/main.js` — mobilní menu, hlavička mizí při scrollu dolů a vrací se
   při scrollu nahoru, odesílání formulářů přes `/api/contact`
 - `functions/api/contact.js` — formuláře Speaking a Contact → e-mail přes Resend

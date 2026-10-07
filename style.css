@@ -266,3 +266,6 @@ p:last-child { margin-bottom: 0; }
 .f-bottom { margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid rgb(255 255 255 / 0.25); text-align: center; font-size: 1rem; }
 
 [hidden] { display: none !important; }
+
+/* Facebook video (portrait), embedded from Facebook, not downloaded */
+.fb-video { display: block; width: min(100%, 340px); height: auto; aspect-ratio: 340 / 604; border: 0; margin-inline: auto; border-radius: var(--radius); background: #000; }

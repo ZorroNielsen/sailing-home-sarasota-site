@@ -58,7 +58,7 @@ Statický web, bez build stepu. Stránky jsou ve složkách, aby fungovaly
 - `robots.txt` + `noindex` — náhled se nemá objevit ve vyhledávačích
 
 Hlavička a patička jsou **v každém HTML souboru zvlášť** — změna = změnit
-v 6 souborech (včetně `404.html`). CSS/JS odkazy mají `?v=5`; po změně stylu číslo zvýšit,
+v 6 souborech (včetně `404.html`). CSS/JS odkazy mají `?v=6`; po změně stylu číslo zvýšit,
 aby prohlížeče načetly novou verzi.
 
 ## Funkce
@@ -71,15 +71,20 @@ aby prohlížeče načetly novou verzi.
   site key `0x4AAAAAAFNkFBzFm2CQXTsB`, společný s key-sailing-site). **Bezpečnost:**
   dokud je ve `wrangler.toml` `FORMS_LIVE = "false"`, jde vše na `TEST_TO`,
   nikdy na Jan. Lokálně funkce neběží → formulář ukáže chybovou hlášku.
+- **Video z Facebooku** na Home (pod úryvkem z knihy), stejné jako na About Us
+  webu Key Sailing: embed `plugins/video.php` videa
+  facebook.com/DiegoRosalesUHD/videos/1249196727281841 (Tim ve Washingtonu,
+  španělsky, na výšku). Nestahuje se, jen vkládá (přání Jan, 7. 10. 2026).
 
 ## Cloudflare — tajné klíče (dashboard → projekt → Settings → Variables and Secrets)
 
 `RESEND_API_KEY`, `TURNSTILE_SECRET_KEY`, `TEST_TO` — stejné jako u
 key-sailing-site (viz jeho CLAUDE.md). Web Analytics se zapíná v dashboardu.
 
-## Čeká se na Jan (seznam ve zprávě pro Jan, připravené 4. 10. 2026)
+## Čeká se na Jan (aktuální k 7. 10. 2026)
 
 - Odkaz na Amazon
+- Potvrdit, že facebookové video (Tim ve Washingtonu) je to správné
 - Jestli má kniha vlastní Facebook/Instagram
 - Jestli dát na web celou knihu místo ukázky
 - „Home in a Helicopter" v ukázce vypadá jako nadpis přilepený k předchozímu

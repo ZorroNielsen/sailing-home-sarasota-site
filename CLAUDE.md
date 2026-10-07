@@ -37,7 +37,7 @@ Statický web, bez build stepu. Stránky jsou ve složkách, aby fungovaly
 
 | Soubor | Stránka |
 |---|---|
-| `index.html` | Home — obálka knihy (zatím placeholder), text, tlačítka, upoutávka na About Jan |
+| `index.html` | Home — obálka knihy (`images/book-cover.jpg`, od Jan 7. 10. 2026), text, tlačítka, upoutávka na About Jan |
 | `about-jan-solomon/index.html` | About Jan — bio, fotka, Jan’s Links |
 | `sample-chapter/index.html` | Ukázka knihy — úzký sloupec, velké písmo (serif 21 px, řádkování 1,8) |
 | `speaking/index.html` | **Nová stránka** — formulář pro objednání přednášky |
@@ -58,7 +58,7 @@ Statický web, bez build stepu. Stránky jsou ve složkách, aby fungovaly
 - `robots.txt` + `noindex` — náhled se nemá objevit ve vyhledávačích
 
 Hlavička a patička jsou **v každém HTML souboru zvlášť** — změna = změnit
-v 6 souborech (včetně `404.html`). CSS/JS odkazy mají `?v=4`; po změně stylu číslo zvýšit,
+v 6 souborech (včetně `404.html`). CSS/JS odkazy mají `?v=5`; po změně stylu číslo zvýšit,
 aby prohlížeče načetly novou verzi.
 
 ## Funkce
@@ -79,7 +79,6 @@ key-sailing-site (viz jeho CLAUDE.md). Web Analytics se zapíná v dashboardu.
 
 ## Čeká se na Jan (seznam ve zprávě pro Jan, připravené 4. 10. 2026)
 
-- Obálka knihy (teď placeholder „Book cover")
 - Odkaz na Amazon
 - Jestli má kniha vlastní Facebook/Instagram
 - Jestli dát na web celou knihu místo ukázky

@@ -170,16 +170,11 @@ p:last-child { margin-bottom: 0; }
 .hero .intro { font-size: clamp(1.3rem, 2.2vw, 1.5rem); line-height: 1.55; margin-bottom: 1.75rem; }
 .hero .btn-row { margin-bottom: 1.25rem; }
 
-/* Book cover placeholder until Jan sends the real cover */
+/* Book cover */
 .cover {
-  aspect-ratio: 2 / 3; width: 100%;
+  aspect-ratio: 2 / 3; width: 100%; height: auto;
   border-radius: 4px;
   box-shadow: 0 14px 30px rgb(31 41 51 / 0.18), 0 2px 6px rgb(31 41 51 / 0.12);
-}
-.cover-placeholder {
-  display: grid; place-items: center; text-align: center;
-  background: var(--white); border: 2px dashed #b9c2cc; box-shadow: none;
-  font-family: var(--sans); color: #8a95a1; font-size: 1.05rem;
 }
 @media (max-width: 760px) {
   .hero-grid { grid-template-columns: 1fr; }

@@ -17,7 +17,7 @@ FORMS_LIVE = "false"
 # Site editor (/admin/, functions/api/admin/[[path]].js). Secret GITHUB_TOKEN is in the dashboard.
 GITHUB_REPO = "ZorroNielsen/sailing-home-sarasota-site"
 GITHUB_BRANCH = "main"
-EDITORS = "siestakeysailing@gmail.com,sailinghomesarasota@gmail.com,websitesbychris.co@gmail.com"
+EDITORS = "siestakeysailing@gmail.com,sailinghomesarasota@gmail.com,websitesbychris.co@gmail.com,adam.kriz.333@gmail.com"
 # Cloudflare Access login for /admin and /api/admin: team domain + the application's audience tag
 ACCESS_TEAM = ""
 ACCESS_AUD = ""

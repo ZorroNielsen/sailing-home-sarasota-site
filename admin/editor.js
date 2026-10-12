@@ -111,6 +111,8 @@
     page = { file: data.file, sha: data.sha };
     changed.clear();
     photos.clear();
+    removes.clear();
+    adds.clear();
     updateCount();
     await new Promise((resolve) => {
       frame.onload = resolve;
@@ -188,7 +190,7 @@
 
   function onInput(e) {
     const el = e.target.closest && e.target.closest("[data-edit]");
-    if (!el) return;
+    if (!el || el.closest("[data-new]")) return;
     const k = el.getAttribute("data-k");
     const html = htmlOf(el);
     if (html === el._original) changed.delete(k);
@@ -216,13 +218,15 @@
     if (img) {
       e.preventDefault();
       e.stopPropagation();
-      pickPhoto(img);
+      const item = groupItem(img);
+      if (item) openPhotoMenu(img, item);
+      else pickPhoto(img, "replace");
       return;
     }
     if (t.closest && t.closest(".menu-btn")) return; // the phone menu still opens
     // The site's own menu and links open that page in the editor (not inside a text being edited).
     const link = t.closest && t.closest("a[href]");
-    if (link && !link.closest("[data-edit]")) {
+    if (link && !link.closest("[data-edit]") && !link.closest("[data-new]")) {
       const file = pageOf(link);
       if (file) {
         e.preventDefault();
@@ -240,17 +244,170 @@
     }
   }
 
+  // ---------- Photo groups (photo grids, galleries, rows of logos) ----------
+  // A group is an element whose children are all photos (a photo, or a box holding one
+  // with at most a caption). Photos in a group can also be removed, or one added next to them.
+
+  function looseText(el) {
+    const c = el.cloneNode(true);
+    c.querySelectorAll("figcaption, .chip, svg").forEach((x) => x.remove());
+    return /\S/.test(c.textContent);
+  }
+
+  function isPhotoItem(el) {
+    if (el.matches("script, style, template, source")) return false;
+    const media = el.matches("img, video") || el.querySelector("img, video");
+    return !!media && !looseText(el);
+  }
+
+  function isGroup(el) {
+    if (!el || el === doc.body || el.matches("main, section, header, footer") || el.closest(SKIP)) return false;
+    const kids = [...el.children].filter((c) => !c.matches("script, style, template") && !c.hidden);
+    return kids.length >= 2 && kids.every(isPhotoItem);
+  }
+
+  // The group item that holds this photo, or null when the photo stands alone.
+  function groupItem(img) {
+    let item = img;
+    for (let depth = 0; depth < 4 && item && item !== doc.body; depth++) {
+      if (isGroup(item.parentElement)) return item;
+      item = item.parentElement;
+    }
+    return null;
+  }
+
+  const removes = new Set(); // k of original group items to remove
+  const adds = new Map();    // k of an original item → new items after it, in order
+
+  function addCount() {
+    let n = 0;
+    for (const list of adds.values()) n += list.length;
+    return n;
+  }
+
+  let menuFor = null;
+  function openPhotoMenu(img, item) {
+    menuFor = { img, item };
+    const visible = [...item.parentElement.children].filter((c) => isPhotoItem(c) && c.style.display !== "none");
+    $("menu-remove").disabled = visible.length <= 1; // a group always keeps one photo
+    $("photo-menu").showModal();
+  }
+
+  $("menu-replace").addEventListener("click", () => {
+    $("photo-menu").close();
+    pickPhoto(menuFor.img, "replace");
+  });
+  $("menu-add").addEventListener("click", () => {
+    $("photo-menu").close();
+    pickPhoto(menuFor.img, "add", menuFor.item);
+  });
+  $("menu-remove").addEventListener("click", () => {
+    $("photo-menu").close();
+    removeItem(menuFor.item);
+  });
+
+  function removeItem(item) {
+    if (item._add) {
+      // A photo added in this session: just forget it.
+      const list = adds.get(item._add.anchor);
+      list.splice(list.indexOf(item._add), 1);
+      if (!list.length) adds.delete(item._add.anchor);
+      item.remove();
+    } else {
+      const k = item.getAttribute("data-k");
+      removes.add(k);
+      item.style.display = "none";
+      // Changes inside a removed photo don't matter any more.
+      photos.delete(k);
+      item.querySelectorAll("[data-k]").forEach((el) => {
+        changed.delete(el.getAttribute("data-k"));
+        photos.delete(el.getAttribute("data-k"));
+      });
+      // New photos added after it now take its place.
+    }
+    updateCount();
+    toast("Photo removed. Press Publish to save it.");
+  }
+
+  // A new group item: a copy of the one tapped, with the new photo and nothing else of the old one.
+  function newItem(from, src, outW, outH) {
+    const clone = from.cloneNode(true);
+    clone.style.display = "";
+    clone.setAttribute("data-new", "");
+    clone.classList.remove("ed-changed");
+    clone.querySelectorAll("[data-k], [data-edit], [data-photo], .ed-changed").forEach((el) => {
+      el.removeAttribute("data-k");
+      el.removeAttribute("data-photo");
+      el.classList.remove("ed-changed");
+    });
+    clone.removeAttribute("data-k");
+    clone.removeAttribute("id");
+    clone.querySelectorAll("[id]").forEach((el) => el.removeAttribute("id"));
+    clone.querySelectorAll("source").forEach((el) => el.remove());
+    const imgs = [...(clone.matches("img") ? [clone] : clone.querySelectorAll("img"))];
+    imgs.slice(1).forEach((el) => el.remove());
+    const img = imgs[0];
+    img.src = src;
+    img.removeAttribute("srcset");
+    img.removeAttribute("sizes");
+    img.removeAttribute("data-raw");
+    img.setAttribute("alt", "");
+    img.setAttribute("width", String(outW));
+    img.setAttribute("height", String(outH));
+    img.setAttribute("data-photo", "");
+    img.classList.add("ed-changed");
+    // A link to the old big photo now opens the new one; any other link goes away.
+    const links = [...(clone.matches("a") ? [clone] : []), ...clone.querySelectorAll("a")];
+    for (const a of links) {
+      if (/\.(jpe?g|png|webp|gif)(\?|$)/i.test(a.getAttribute("href") || "")) a.setAttribute("data-new-link", "");
+      else if (a === clone) a.removeAttribute("href");
+      else a.replaceWith(...a.childNodes);
+    }
+    clone.querySelectorAll("[contenteditable]").forEach((el) => el.removeAttribute("contenteditable"));
+    clone.querySelectorAll("figcaption, .chip").forEach((el) => {
+      if (/\S/.test(el.textContent)) {
+        el.setAttribute("contenteditable", plainOnly ? "plaintext-only" : "true");
+        el.setAttribute("data-edit", "");
+      }
+    });
+    return clone;
+  }
+
+  // The HTML of a new item as it goes to the server: "__NEW__" marks where the photo's path goes.
+  function newItemHtml(item) {
+    const c = item.cloneNode(true);
+    c.removeAttribute("data-new");
+    c.classList.remove("ed-changed");
+    if (!c.getAttribute("class")) c.removeAttribute("class");
+    c.querySelectorAll("*").forEach((el) => {
+      ["data-photo", "data-edit", "contenteditable", "spellcheck"].forEach((a) => el.removeAttribute(a));
+      el.classList.remove("ed-changed");
+      if (el.getAttribute("class") === "") el.removeAttribute("class");
+    });
+    const img = c.matches("img") ? c : c.querySelector("img");
+    img.setAttribute("src", "__NEW__");
+    const links = [...(c.matches("a") ? [c] : []), ...c.querySelectorAll("a")];
+    for (const a of links) {
+      if (a.hasAttribute("data-new-link")) { a.setAttribute("href", "__NEW__"); a.removeAttribute("data-new-link"); }
+    }
+    return c.outerHTML.replace(/&nbsp;/g, " ");
+  }
+
   // ---------- Photos ----------
 
-  let target = null;     // the <img> being replaced
+  let target = null;     // the <img> being replaced, or the one next to which a photo is added
+  let mode = "replace";  // "replace" or "add"
+  let addAfter = null;   // the group item a new photo goes after
   let bitmap = null;     // the chosen photo
-  const crop = { aspect: 1, zoom: 1, cx: 0, cy: 0, base: 1, boxW: 0, boxH: 0 };
+  const crop = { aspect: 1, zoom: 1, cx: 0, cy: 0, boxW: 0 };
   const cropBox = $("crop");
   const canvas = $("crop-canvas");
   const zoomInput = $("crop-zoom");
 
-  function pickPhoto(img) {
+  function pickPhoto(img, how, item) {
     target = img;
+    mode = how;
+    addAfter = item || null;
     fileInput.value = "";
     fileInput.click();
   }
@@ -273,26 +430,32 @@
     zoomInput.value = "1";
     cropBox.style.aspectRatio = String(crop.aspect);
     cropBox.style.maxWidth = `calc(55vh * ${crop.aspect})`;
+    $("photo-title").textContent = mode === "add" ? "Add a photo" : "New photo";
     $("photo-dlg").showModal();
     requestAnimationFrame(drawCrop);
   });
 
+  // The part of the photo that shows in the frame, in the photo's own pixels.
+  function view(src) {
+    const w0 = Math.min(src.width, src.height * crop.aspect); // the biggest frame that fits
+    const vw = w0 / crop.zoom;
+    const vh = vw / crop.aspect;
+    crop.cx = Math.min(Math.max(crop.cx, vw / 2), src.width - vw / 2);
+    crop.cy = Math.min(Math.max(crop.cy, vh / 2), src.height - vh / 2);
+    return { x: crop.cx - vw / 2, y: crop.cy - vh / 2, w: vw, h: vh };
+  }
+
   function drawCrop() {
+    if (!bitmap) return;
     const r = cropBox.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     crop.boxW = r.width;
-    crop.boxH = r.height;
-    canvas.width = Math.round(r.width * dpr);
-    canvas.height = Math.round(r.height * dpr);
-    crop.base = Math.max(r.width / bitmap.width, r.height / bitmap.height);
-    const s = crop.base * crop.zoom;
-    const vw = r.width / s;
-    const vh = r.height / s;
-    crop.cx = Math.min(Math.max(crop.cx, vw / 2), bitmap.width - vw / 2);
-    crop.cy = Math.min(Math.max(crop.cy, vh / 2), bitmap.height - vh / 2);
+    canvas.width = Math.max(1, Math.round(r.width * dpr));
+    canvas.height = Math.max(1, Math.round(r.height * dpr));
+    const v = view(bitmap);
     const ctx = canvas.getContext("2d");
     ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(bitmap, crop.cx - vw / 2, crop.cy - vh / 2, vw, vh, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bitmap, v.x, v.y, v.w, v.h, 0, 0, canvas.width, canvas.height);
   }
 
   zoomInput.addEventListener("input", () => { crop.zoom = Number(zoomInput.value); drawCrop(); });
@@ -303,8 +466,8 @@
     cropBox.setPointerCapture(e.pointerId);
   });
   cropBox.addEventListener("pointermove", (e) => {
-    if (!drag) return;
-    const s = crop.base * crop.zoom;
+    if (!drag || !bitmap || !crop.boxW) return;
+    const s = crop.boxW / view(bitmap).w; // screen pixels per photo pixel
     crop.cx -= (e.clientX - drag.x) / s;
     crop.cy -= (e.clientY - drag.y) / s;
     drag = { x: e.clientX, y: e.clientY };
@@ -314,19 +477,23 @@
   cropBox.addEventListener("pointercancel", () => { drag = null; });
 
   $("crop-ok").addEventListener("click", async () => {
+    const okBtn = $("crop-ok");
+    if (okBtn.disabled) return;
+    okBtn.disabled = true; // one photo at a time
     const img = target;
+    const how = mode;
+    const after = addAfter;
+    const chosen = bitmap;
     const w = Number(img.getAttribute("width")) || img.naturalWidth;
     const outW = Math.round(Math.min(2000, Math.max(w, img.naturalWidth, 1200)));
     const outH = Math.round(outW / crop.aspect);
-    const s = crop.base * crop.zoom;
-    const vw = crop.boxW / s;
-    const vh = crop.boxH / s;
+    const v = view(chosen);
     const out = document.createElement("canvas");
     out.width = outW;
     out.height = outH;
     const ctx = out.getContext("2d");
     ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(bitmap, crop.cx - vw / 2, crop.cy - vh / 2, vw, vh, 0, 0, outW, outH);
+    ctx.drawImage(chosen, v.x, v.y, v.w, v.h, 0, 0, outW, outH);
 
     const png = /\.png(\?|$)/i.test(img.getAttribute("src") || ""); // keeps see-through graphics see-through
     const blob = await new Promise((r) => out.toBlob(r, png ? "image/png" : "image/jpeg", 0.85));
@@ -335,33 +502,57 @@
       fr.onload = () => r(String(fr.result).split(",")[1]);
       fr.readAsDataURL(blob);
     });
+    const shot = { data, ext: png ? "png" : "jpg", width: outW, height: outH };
+    const src = URL.createObjectURL(blob);
 
-    // The old photo's other sizes and formats inside <picture> go away with it.
-    const drops = [];
-    const pic = img.parentElement && img.parentElement.tagName === "PICTURE" ? img.parentElement : null;
-    if (pic) {
-      pic.querySelectorAll("source").forEach((src) => {
-        if (src.hasAttribute("data-k")) drops.push(src.getAttribute("data-k"));
-        src.remove();
-      });
+    if (how === "add") {
+      // Goes right after the tapped photo; on the server, after the original photo it belongs to.
+      const from = after;
+      const anchor = from._add ? from._add.anchor : from.getAttribute("data-k");
+      const list = adds.get(anchor) || [];
+      const entry = Object.assign({ anchor }, shot);
+      list.splice(from._add ? list.indexOf(from._add) + 1 : 0, 0, entry);
+      adds.set(anchor, list);
+      const item = newItem(from, src, outW, outH);
+      item._add = entry;
+      entry.el = item;
+      from.after(item);
+    } else if (img.closest("[data-new]")) {
+      // A photo added in this session: swap the new file.
+      const entry = img.closest("[data-new]")._add;
+      Object.assign(entry, shot);
+      img.src = src;
+      img.setAttribute("width", String(outW));
+      img.setAttribute("height", String(outH));
+    } else {
+      // The old photo's other sizes and formats inside <picture> go away with it.
+      const drops = [];
+      const pic = img.parentElement && img.parentElement.tagName === "PICTURE" ? img.parentElement : null;
+      if (pic) {
+        pic.querySelectorAll("source").forEach((el) => {
+          if (el.hasAttribute("data-k")) drops.push(el.getAttribute("data-k"));
+          el.remove();
+        });
+      }
+      const k = img.getAttribute("data-k");
+      const before = photos.get(k);
+      photos.set(k, Object.assign(shot, { drops: before ? before.drops.concat(drops) : drops }));
+      img.removeAttribute("srcset");
+      img.removeAttribute("sizes");
+      img.setAttribute("width", String(outW));
+      img.setAttribute("height", String(outH));
+      img.src = src;
+      img.classList.add("ed-changed");
     }
-    const k = img.getAttribute("data-k");
-    const before = photos.get(k);
-    photos.set(k, { data, ext: png ? "png" : "jpg", width: outW, height: outH, drops: before ? before.drops.concat(drops) : drops });
-    img.removeAttribute("srcset");
-    img.removeAttribute("sizes");
-    img.setAttribute("width", String(outW));
-    img.setAttribute("height", String(outH));
-    img.src = URL.createObjectURL(blob);
-    img.classList.add("ed-changed");
     $("photo-dlg").close();
     bitmap = null;
+    okBtn.disabled = false;
     updateCount();
   });
 
   // ---------- Publish ----------
 
-  function count() { return changed.size + photos.size; }
+  function count() { return changed.size + photos.size + removes.size + addCount(); }
 
   function updateCount() {
     const n = count();
@@ -382,6 +573,11 @@
         texts: Object.fromEntries(changed),
         photos: [...photos].map(([k, p]) => ({ k, data: p.data, ext: p.ext, width: p.width, height: p.height })),
         drops,
+        removes: [...removes],
+        adds: [...adds].map(([k, list]) => ({
+          after: k,
+          items: list.map((a) => ({ html: newItemHtml(a.el), data: a.data, ext: a.ext, width: a.width, height: a.height })),
+        })),
       });
       await openPage(page.file);
       toast("Published! Your website will show it in about a minute.");

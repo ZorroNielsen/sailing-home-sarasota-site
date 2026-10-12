@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap">
-<link rel="stylesheet" href="editor.css?v=2">
-<script src="editor.js?v=2" defer></script>
+<link rel="stylesheet" href="editor.css?v=3">
+<script src="editor.js?v=3" defer></script>
 </head>
 <body>
 <!-- Site editor: change any text or photo on the pages; the layout stays as it is.
@@ -27,7 +27,7 @@
 </header>
 
 <div class="hint" id="hint">
-  <p>Tap any text to change it, or tap a photo to replace it. Nothing changes on your website until you press <strong>Publish</strong>.</p>
+  <p>Tap any text to change it. Tap a photo to replace it, or to add or remove photos in a group. Nothing changes on your website until you press <strong>Publish</strong>.</p>
   <button class="x" id="hint-close" type="button" aria-label="Close tip">×</button>
 </div>
 
@@ -37,6 +37,18 @@
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<dialog class="sheet" id="photo-menu" aria-labelledby="menu-title">
+  <h2 id="menu-title">This photo</h2>
+  <div class="menu-list">
+    <button class="btn ghost" id="menu-replace" type="button">Replace this photo</button>
+    <button class="btn ghost" id="menu-add" type="button">Add a photo after this one</button>
+    <button class="btn ghost" id="menu-remove" type="button">Remove this photo</button>
+  </div>
+  <div class="row">
+    <button class="btn ghost" type="button" data-close>Cancel</button>
+  </div>
+</dialog>
 
 <dialog class="sheet" id="photo-dlg" aria-labelledby="photo-title">
   <h2 id="photo-title">New photo</h2>

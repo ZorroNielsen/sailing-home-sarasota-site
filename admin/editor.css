@@ -144,6 +144,10 @@ body {
 .zoom { display: flex; align-items: center; gap: 0.75rem; margin-top: 1rem; font-weight: 600; }
 .zoom input { flex: 1; accent-color: var(--navy); }
 
+.menu-list { display: grid; gap: 0.5rem; margin-top: 1rem; }
+.menu-list .btn { width: 100%; text-align: left; padding-inline: 1.25rem; }
+.menu-list .btn:disabled { color: #a9b3c2; cursor: default; }
+
 .history { list-style: none; margin: 0; padding: 0; max-height: 50vh; overflow: auto; }
 .history li {
   display: flex; align-items: center; gap: 0.75rem;

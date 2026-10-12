@@ -18,7 +18,9 @@
 //   GET  pages               every page that can be edited
 //   GET  page?file=…         one page from GitHub, each element numbered (data-k)
 //   GET  raw?path=images/…   a photo straight from GitHub (before Cloudflare has rebuilt)
-//   POST save                {file, sha, texts: {k: html}, photos: [{k, data, ext, width, height}], drops: [k]}
+//   POST save                {file, sha, texts: {k: html}, photos: [{k, data, ext, width, height}], drops: [k],
+//                             removes: [k], adds: [{after: k, items: [{html, data, ext, width, height}]}]}
+//                            removes / adds: photos taken out of, or put into, a photo group
 //   GET  history             the latest editor changes
 //   POST undo                {sha}
 
@@ -152,7 +154,22 @@ async function save(env, email, body) {
     photos.set(Number(p.k), p);
   }
   const drops = new Set((body.drops || []).map(Number));
-  if (!texts.size && !photos.size) throw new HttpError(400, "There's nothing to publish.");
+  const removes = new Set((body.removes || []).map(Number));
+  const adds = new Map();
+  for (const a of body.adds || []) {
+    const items = [];
+    for (const it of a.items || []) {
+      if (!/^(jpg|png)$/.test(it.ext) || typeof it.data !== "string" || !(it.width > 0) || !(it.height > 0)) {
+        throw new HttpError(400, "That photo couldn't be read.");
+      }
+      const html = await cleanItem(String(it.html || ""));
+      if (!html.includes('src="__NEW__"')) throw new HttpError(400, "That photo couldn't be added.");
+      items.push({ ...it, html });
+    }
+    if (items.length) adds.set(Number(a.after), items);
+  }
+  const nAdds = [...adds.values()].reduce((n, list) => n + list.length, 0);
+  if (!texts.size && !photos.size && !removes.size && !nAdds) throw new HttpError(400, "There's nothing to publish.");
 
   const head = await gh(env, `/git/ref/heads/${env.GITHUB_BRANCH}`);
   const headSha = head.object.sha;
@@ -169,6 +186,15 @@ async function save(env, email, body) {
     entries.push({ path, mode: "100644", type: "blob", sha: blob.sha });
     p.src = up + path;
   }
+  let n = 0;
+  for (const [k, list] of adds) {
+    for (const it of list) {
+      const path = `images/uploads/${stamp}-${k}-${++n}.${it.ext}`;
+      const blob = await gh(env, "/git/blobs", { method: "POST", body: { content: it.data, encoding: "base64" } });
+      entries.push({ path, mode: "100644", type: "blob", sha: blob.sha });
+      it.html = it.html.replace(/__NEW__/g, up + path);
+    }
+  }
 
   // Count elements on the untouched file first: what the rewrite does to an element's
   // insides must never shift the numbers of the elements after it.
@@ -176,6 +202,8 @@ async function save(env, email, body) {
   for (const k of texts.keys()) kinds.set(k, "text");
   for (const k of photos.keys()) kinds.set(k, "photo");
   for (const k of drops) kinds.set(k, "drop");
+  for (const k of removes) kinds.set(k, "remove");
+  for (const k of adds.keys()) if (!kinds.has(k)) kinds.set(k, "add");
   const seen = new Set();
   let i = 0;
   const html = await new HTMLRewriter().on("*", {
@@ -194,9 +222,15 @@ async function save(env, email, body) {
         el.setAttribute("height", String(Math.round(p.height)));
         el.removeAttribute("srcset");
         el.removeAttribute("sizes");
-      } else if (el.tagName === "source") {
-        el.remove(); // the old photo's other formats inside <picture>
+      } else if (kind === "drop") {
+        if (el.tagName === "source") el.remove(); // the old photo's other formats inside <picture>
+      } else if (kind === "remove") {
+        // A photo taken out of a group; photos added after it take its place.
+        if (adds.has(k)) el.replace(adds.get(k).map((it) => it.html).join(""), { html: true });
+        else el.remove();
+        return;
       }
+      if (adds.has(k)) el.after(adds.get(k).map((it) => it.html).join(""), { html: true });
     },
   }).transform(new Response(current.text)).text();
   if (seen.size !== kinds.size) throw new HttpError(409, "The page layout changed. Reload the page and try again.");
@@ -207,6 +241,8 @@ async function save(env, email, body) {
   const parts = [];
   if (texts.size) parts.push(`${texts.size} text change${texts.size > 1 ? "s" : ""}`);
   if (photos.size) parts.push(`${photos.size} new photo${photos.size > 1 ? "s" : ""}`);
+  if (nAdds) parts.push(`${nAdds} photo${nAdds > 1 ? "s" : ""} added`);
+  if (removes.size) parts.push(`${removes.size} photo${removes.size > 1 ? "s" : ""} removed`);
   const sha = await commit(env, headSha, entries, `${PREFIX}${file} – ${parts.join(", ")}`, email);
   return { ok: true, commit: sha };
 }
@@ -229,6 +265,33 @@ function cleanText(html) {
           (tag === "a" && (name === "href" || name === "target" || name === "rel")) ||
           (tag === "time" && name === "datetime");
         if (!keep || (name === "href" && /^\s*(javascript|data|vbscript):/i.test(value))) el.removeAttribute(name);
+      }
+    },
+  }).transform(new Response(html)).text();
+}
+
+// A new photo in a group is a copy of its neighbour: plain boxes, the photo, a caption,
+// small icons. The photo must be the new upload ("__NEW__"); nothing can run code.
+const ITEM_TAGS = new Set(["figure", "figcaption", "picture", "img", "a", "div", "span", "p", "li", "strong", "em", "b", "i", "br", "small",
+  "svg", "path", "circle", "rect", "line", "polyline", "polygon", "ellipse", "g"]);
+const SVG_ATTRS = new Set(["viewbox", "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin", "d", "cx", "cy", "r", "rx", "ry",
+  "x", "y", "x1", "y1", "x2", "y2", "points", "xmlns", "transform"]);
+
+function cleanItem(html) {
+  return new HTMLRewriter().on("*", {
+    element(el) {
+      const tag = el.tagName;
+      if (!ITEM_TAGS.has(tag)) return el.remove();
+      if (tag === "img" && el.getAttribute("src") !== "__NEW__") return el.remove();
+      for (const [name, value] of [...el.attributes]) {
+        const keep = name === "class" || name === "alt" || name === "width" || name === "height" || name === "loading" ||
+          name === "decoding" || name === "title" || name.startsWith("aria-") || (name.startsWith("data-") && name !== "data-k") ||
+          (tag === "img" && name === "src") ||
+          (tag === "a" && (name === "href" || name === "target" || name === "rel")) ||
+          (name === "style" && !/url\(|expression|javascript/i.test(value)) ||
+          SVG_ATTRS.has(name);
+        const badHref = name === "href" && value !== "__NEW__" && !/^(https?:|mailto:|tel:|[a-z0-9._\/#-])/i.test(value);
+        if (!keep || badHref || /^\s*(javascript|data|vbscript):/i.test(value)) el.removeAttribute(name);
       }
     },
   }).transform(new Response(html)).text();

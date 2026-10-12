@@ -32,6 +32,8 @@ Vědomé odchylky od starého webu:
   (podle briefu: zeptat se Jan, jestli má kniha vlastní).
 - Menu podle briefu: Home, About Jan, Sample Chapter, Speaking, Contact
   (starý web měl „Sample Chapters" a „Contact Us").
+- Úprava od Jan (12. 10. 2026): „40,000 guests agree“ → „60,000 guests agree“ na Home
+  (About the Author) i na About Jan (stejné číslo jako „approximately 60,000“ na Key Sailing).
 
 ## Struktura
 
@@ -60,6 +62,10 @@ Statický web, bez build stepu. Stránky jsou ve složkách, aby fungovaly
 - `sitemap.xml` — adresy s ostrou doménou sailinghomesarasota.com
 - `images/` — logo `SHS-logo2.png` a `About-Jan-Solomon.jpg` ze starého webu
 - `robots.txt` + `noindex` — náhled se nemá objevit ve vyhledávačích
+- `originals/` — **je v `.gitignore`**, jen na Adamově Macu. `stary-web/` = kompletní kopie
+  starého WordPress webu (stažená 12. 10. 2026 před spuštěním): všech 5 stránek + Sample Page
+  a Hello World, fotky z `wp-content/uploads` (i originály), obě PDF (About-Jan-Solomon,
+  SHS-Sample), styly a skripty Divi, 9 MB; seznam v `seznam-sailinghomesarasota.com.csv`.
 
 Hlavička a patička jsou **v každém HTML souboru zvlášť** — změna = změnit
 v 6 souborech (včetně `404.html`). CSS/JS odkazy mají `?v=6`; po změně stylu číslo zvýšit,

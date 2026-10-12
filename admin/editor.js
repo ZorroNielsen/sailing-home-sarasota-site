@@ -77,18 +77,24 @@
     if (page) pageSel.value = page.file;
   }
 
+  // The editable page a link points to, or null.
+  function pageOf(a) {
+    const url = new URL(a.getAttribute("href"), doc.baseURI);
+    if (url.origin !== location.origin) return null;
+    let path = url.pathname.replace(/^\//, "");
+    if (path === "" || path.endsWith("/")) path += "index.html";
+    else if (!/\.html$/.test(path) && pages.includes(path + ".html")) path += ".html";
+    else if (!/\.html$/.test(path) && pages.includes(path + "/index.html")) path += "/index.html";
+    return pages.includes(path) ? path : null;
+  }
+
   // Use the menu names from the site ("Reserve" instead of "Charter Pricing").
   function learnLabels() {
     let added = false;
     doc.querySelectorAll(".site-nav a[href], .site-footer a[href]").forEach((a) => {
-      const url = new URL(a.getAttribute("href"), doc.baseURI);
-      if (url.origin !== location.origin) return;
-      let path = url.pathname.replace(/^\//, "");
-      if (path === "" || path.endsWith("/")) path += "index.html";
-      else if (!/\.html$/.test(path) && pages.includes(path + ".html")) path += ".html";
-      else if (!/\.html$/.test(path) && pages.includes(path + "/index.html")) path += "/index.html";
+      const path = pageOf(a);
       const name = a.textContent.trim();
-      if (pages.includes(path) && name && path !== "index.html" && !labels.has(path)) {
+      if (path && name && path !== "index.html" && !labels.has(path)) {
         labels.set(path, name);
         added = true;
       }
@@ -214,6 +220,20 @@
       return;
     }
     if (t.closest && t.closest(".menu-btn")) return; // the phone menu still opens
+    // The site's own menu and links open that page in the editor (not inside a text being edited).
+    const link = t.closest && t.closest("a[href]");
+    if (link && !link.closest("[data-edit]")) {
+      const file = pageOf(link);
+      if (file) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (file !== page.file) {
+          pageSel.value = file;
+          pageSel.dispatchEvent(new Event("change"));
+        }
+        return;
+      }
+    }
     if (t.closest && t.closest("a, button, summary, label")) {
       e.preventDefault(); // links and buttons don't go anywhere while editing
       e.stopPropagation();

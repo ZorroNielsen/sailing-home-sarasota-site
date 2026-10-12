@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Edit your website</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="editor.css?v=1">
+<script src="editor.js?v=1" defer></script>
+</head>
+<body>
+<!-- Site editor: change any text or photo on the pages; the layout stays as it is.
+     Back end: functions/api/admin/[[path]].js -->
+<header class="bar">
+  <label class="pick">
+    <span class="sr">Page</span>
+    <select id="page" disabled><option>Loading…</option></select>
+  </label>
+  <div class="bar-end">
+    <button class="btn ghost" id="history-btn" type="button">History</button>
+    <button class="btn primary" id="publish" type="button" disabled>Publish</button>
+  </div>
+</header>
+
+<div class="hint" id="hint">
+  <p>Tap any text to change it, or tap a photo to replace it. Nothing changes on your website until you press <strong>Publish</strong>.</p>
+  <button class="x" id="hint-close" type="button" aria-label="Close tip">×</button>
+</div>
+
+<main class="stage">
+  <iframe id="frame" title="Your page, ready to edit"></iframe>
+  <p class="loading" id="loading">Loading your page…</p>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<dialog class="sheet" id="photo-dlg" aria-labelledby="photo-title">
+  <h2 id="photo-title">New photo</h2>
+  <p class="muted">Drag the photo to choose what shows in the frame.</p>
+  <div class="crop" id="crop"><canvas id="crop-canvas"></canvas></div>
+  <label class="zoom">Zoom <input id="crop-zoom" type="range" min="1" max="3" step="0.01" value="1"></label>
+  <div class="row">
+    <button class="btn ghost" type="button" data-close>Cancel</button>
+    <button class="btn primary" type="button" id="crop-ok">Use this photo</button>
+  </div>
+</dialog>
+
+<dialog class="sheet" id="history-dlg" aria-labelledby="history-title">
+  <h2 id="history-title">History</h2>
+  <p class="muted">Every change you publish is saved here. Undo puts the page back the way it was before that change.</p>
+  <ul class="history" id="history-list"></ul>
+  <div class="row">
+    <button class="btn ghost" type="button" data-close>Close</button>
+  </div>
+</dialog>
+
+<dialog class="sheet" id="confirm-dlg" aria-labelledby="confirm-title">
+  <h2 id="confirm-title"></h2>
+  <p class="muted" id="confirm-text"></p>
+  <div class="row">
+    <button class="btn ghost" type="button" data-close>Cancel</button>
+    <button class="btn primary" type="button" id="confirm-ok"></button>
+  </div>
+</dialog>
+
+<input id="file" type="file" accept="image/*" hidden>
+</body>
+</html>

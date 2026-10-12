@@ -79,6 +79,11 @@ aby prohlížeče načetly novou verzi.
   webu Key Sailing: embed `plugins/video.php` videa
   facebook.com/DiegoRosalesUHD/videos/1249196727281841 (Tim ve Washingtonu,
   španělsky, na výšku). Nestahuje se, jen vkládá (přání Jan, 7. 10. 2026).
+- **Editor pro Jan** (`/admin/`): stejný jako na key-sailing-site (soubory `admin/*` a
+  `functions/api/admin/[[path]].js` jsou totožné) — text a fotky klepnutím, Publish = commit,
+  History → Undo, přihlášení Cloudflare Access (`EDITORS` ve `wrangler.toml`),
+  secret `GITHUB_TOKEN` (fine-grained, jen tohle repo, Contents: R/W). Popis v CLAUDE.md
+  key-sailing-site.
 
 ## Cloudflare — tajné klíče (dashboard → projekt → Settings → Variables and Secrets)
 

@@ -83,8 +83,10 @@ async function editorEmail(request, env) {
   const ok = await crypto.subtle.verify("RSASSA-PKCS1-v1_5", key, b64urlBytes(s), new TextEncoder().encode(`${h}.${p}`));
   if (!ok) return null;
 
+  // ACCESS_AUD may list several Access applications (e.g. the whole site and /api/admin).
+  const auds = String(env.ACCESS_AUD).split(",").map((a) => a.trim()).filter(Boolean);
   const aud = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
-  if (!aud.includes(env.ACCESS_AUD)) return null;
+  if (!aud.some((a) => auds.includes(a))) return null;
   if (payload.iss !== `https://${env.ACCESS_TEAM}`) return null;
   if (!payload.exp || payload.exp * 1000 < Date.now()) return null;
 

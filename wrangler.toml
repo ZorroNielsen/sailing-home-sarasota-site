@@ -21,4 +21,4 @@ EDITORS = "siestakeysailing@gmail.com,sailinghomesarasota@gmail.com,websitesbych
 # Cloudflare Access login (covers the whole pages.dev site): team domain + the application's audience tag
 # (comma-separated if more than one; Zero Trust → Access → Applications → the app → Application Audience Tag)
 ACCESS_TEAM = "keysailing.cloudflareaccess.com"
-ACCESS_AUD = "440efa13dc74bdb7a683bd95981e94e5a9d2e44bc60af18ee9e7cf5e0fd27323"
+ACCESS_AUD = "440efa13dc74bdb7a683bd95981e94e5a9d2e44bc60af18ee9e7cf5e0fd27323,4244f0b9b76de91483a977fd94e0a7d230cc223a4ee3bdf11c297d014ff15fb9"

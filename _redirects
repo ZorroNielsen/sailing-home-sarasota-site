@@ -1,0 +1,13 @@
+# Cloudflare Pages redirects (https://developers.cloudflare.com/pages/configuration/redirects/)
+# Old WordPress addresses (sailinghomesarasota.com until 12 Oct 2026) → the new pages,
+# so old links, bookmarks and Google results still land somewhere useful.
+/wp-content/uploads/2021/11/SHS-Sample.pdf         /sample-chapter/     301
+/wp-content/uploads/2021/11/About-Jan-Solomon.pdf  /about-jan-solomon/  301
+/wp-content/uploads/2021/11/About-Jan-Solomon.jpg  /images/About-Jan-Solomon.jpg  301
+/sample-page   /  301
+/sample-page/  /  301
+/hello-world   /  301
+/hello-world/  /  301
+/feed          /  301
+/feed/         /  301
+/comments/feed/  /  301

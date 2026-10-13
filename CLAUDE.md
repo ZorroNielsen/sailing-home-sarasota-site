@@ -111,17 +111,17 @@ key-sailing-site (viz jeho CLAUDE.md). Web Analytics se zapíná v dashboardu.
 - Později (ne v první verzi): dary (bez slov „tax-deductible" před
   501(c)(3)), dokument
 
-## Při spuštění (až weby nahradí ty staré)
+## Spuštění (12. 10. 2026) — hotovo
 
-- Domény sailinghomesarasota.com (+ www) na Cloudflare, napojit na Pages projekt
-- Smazat `Disallow: /` z `robots.txt` a `<meta name="robots" content="noindex…">` ze všech stránek
-- Formuláře: v Resend přidat a ověřit doménu sailinghomesarasota.com (DNS záznamy SPF/DKIM/DMARC
-  přidat v Cloudflare DNS), `MAIL_FROM` přepnout na adresu z ní (např.
-  `website@sailinghomesarasota.com`), pak `FORMS_LIVE = "true"` — teprve tehdy chodí zprávy Jan.
-  Bez ověřené domény padají e-maily do spamu (test 4. 10. 2026: všechny 3
-  formuláře doručeny přes `onboarding@resend.dev`, ale do spamu).
-- Turnstile: přidat ostré domény do hostnames widgetu
-- Odkazy na Key Sailing (patička „Sail with Tim and Jan", About Jan) teď vedou na náhled `key-sailing-site.pages.dev` → při spuštění vrátit na `https://www.siestakeysailing.com`
+Web běží na **https://sailinghomesarasota.com** (Cloudflare Pages, zóna na Cloudflaru). Zkontrolováno
+13. 10. 2026: https na obou adresách, http → https, **www → bez www** (301), všechny stránky 200,
+`robots.txt` otevřený, žádné `noindex`, `/admin` za přihlášením, Turnstile přijímá doménu i www,
+`/api/contact` bez tokenu odmítne. Doména nemá e-mail (žádné MX).
+- `_redirects` (13. 10. 2026): staré adresy WordPressu → nové stránky (PDF ukázky → Sample
+  Chapter, PDF/fotka About Jan → About Jan, `sample-page`, `hello-world`, `feed` → Home).
+  `/?p=…` přesměrovat nejde (Pages nepracuje s query), končí na Home.
+
+**Zbývá:** Google Search Console (ověřit doménu, poslat `sitemap.xml`).
 
 ## Lokální náhled
 

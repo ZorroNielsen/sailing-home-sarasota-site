@@ -96,7 +96,7 @@ aby prohlížeče načetly novou verzi.
 `RESEND_API_KEY`, `TURNSTILE_SECRET_KEY`, `TEST_TO` — stejné jako u
 key-sailing-site (viz jeho CLAUDE.md). Web Analytics se zapíná v dashboardu.
 
-## Čeká se na Jan (aktuální k 7. 10. 2026)
+## Čeká se na Jan (aktuální k 13. 10. 2026)
 
 - Odkaz na Amazon
 - Potvrdit, že facebookové video (Tim ve Washingtonu) je to správné
@@ -106,8 +106,6 @@ key-sailing-site (viz jeho CLAUDE.md). Web Analytics se zapíná v dashboardu.
   řádku — má to být samostatný nadpis?
 - Volitelně: čistý portrét Jan a fotka z přednášky (pro Speaking);
   1–2 věty jejími slovy o tom, o čem přednáší
-- Ke spuštění: schválení náhledu; přístup k doméně sailinghomesarasota.com;
-  jestli Jan používá e-mail na doméně (pak zachovat MX záznamy)
 - Později (ne v první verzi): dary (bez slov „tax-deductible" před
   501(c)(3)), dokument
 
@@ -125,7 +123,8 @@ Web běží na **https://sailinghomesarasota.com** (Cloudflare Pages, zóna na C
   About Jan = `Person`; `llms.txt` v kořeni = krátké shrnutí pro AI. Až bude odkaz na Amazon,
   doplnit ho i do `Book` (`offers` / `sameAs`) a do `llms.txt`.
 
-**Zbývá:** Google Search Console (ověřit doménu, poslat `sitemap.xml`).
+**Zbývá:** Google Search Console a Bing Webmaster Tools (ověřit doménu, poslat `sitemap.xml`).
+Formuláře a Resend spravuje collaborator (účet websitesbychris) — **na Resendu nic neměnit**.
 
 ## Lokální náhled
 

@@ -11,8 +11,8 @@ SITE = "sailing-home"
 SITE_NAME = "Sailing Home Sarasota website"
 MAIL_FROM = "Sailing Home Sarasota website <website@sailinghomesarasota.com>"
 LIVE_TO = "sailinghomesarasota@gmail.com"
-# Keep "false" until launch: every form goes to TEST_TO, never to Jan.
-FORMS_LIVE = "false"
+# "true" since launch (12 Oct 2026): forms go to LIVE_TO. "false" sends them to TEST_TO instead.
+FORMS_LIVE = "true"
 
 # Site editor (/admin/, functions/api/admin/[[path]].js). Secret GITHUB_TOKEN is in the dashboard.
 GITHUB_REPO = "ZorroNielsen/sailing-home-sarasota-site"

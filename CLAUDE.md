@@ -121,6 +121,10 @@ Web běží na **https://sailinghomesarasota.com** (Cloudflare Pages, zóna na C
   Chapter, PDF/fotka About Jan → About Jan, `sample-page`, `hello-world`, `feed` → Home).
   `/?p=…` přesměrovat nejde (Pages nepracuje s query), končí na Home.
 
+- Strukturovaná data (13. 10. 2026): Home = `WebSite` + `Book` (autorka Jan, obálka, ukázka),
+  About Jan = `Person`; `llms.txt` v kořeni = krátké shrnutí pro AI. Až bude odkaz na Amazon,
+  doplnit ho i do `Book` (`offers` / `sameAs`) a do `llms.txt`.
+
 **Zbývá:** Google Search Console (ověřit doménu, poslat `sitemap.xml`).
 
 ## Lokální náhled

@@ -9,7 +9,7 @@ compatibility_date = "2026-09-01"
 [vars]
 SITE = "sailing-home"
 SITE_NAME = "Sailing Home Sarasota website"
-MAIL_FROM = "Sailing Home Sarasota website <onboarding@resend.dev>"
+MAIL_FROM = "Sailing Home Sarasota website <website@sailinghomesarasota.com>"
 LIVE_TO = "sailinghomesarasota@gmail.com"
 # Keep "false" until launch: every form goes to TEST_TO, never to Jan.
 FORMS_LIVE = "false"
